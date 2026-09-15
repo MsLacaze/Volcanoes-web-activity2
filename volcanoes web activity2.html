@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Volcano Monitoring HQ | Complete 30-Minute Webquest</title>
+  <style>
+    :root {
+      --bg-dark: #0f1117;
+      --card-bg: #1a1d26;
+      --card-border: #2a2f3d;
+      --accent-orange: #ff5722;
+      --accent-red: #e63946;
+      --accent-gold: #ffb703;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --correct: #10b981;
+      --incorrect: #ef4444;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      margin: 0;
+      padding: 20px;
+      line-height: 1.6;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(255, 87, 34, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(230, 57, 70, 0.08) 0%, transparent 40%);
+    }
+
+    .container {
+      max-width: 950px;
+      margin: 0 auto;
+    }
+
+    header {
+      background: linear-gradient(135deg, #2a0800 0%, #1a1d26 100%);
+      border: 1px solid rgba(255, 87, 34, 0.3);
+      padding: 25px;
+      border-radius: 16px;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 4px;
+      background: linear-gradient(90deg, var(--accent-orange), var(--accent-gold), var(--accent-red));
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      letter-spacing: 0.5px;
+      background: linear-gradient(90deg, #fff, #ffb703);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .badge {
+      background: rgba(255, 87, 34, 0.2);
+      color: var(--accent-orange);
+      border: 1px solid var(--accent-orange);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    /* Timer & Progress Bar */
+    .dashboard-bar {
+      position: sticky;
+      top: 15px;
+      z-index: 100;
+      background: rgba(26, 29, 38, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--card-border);
+      padding: 12px 20px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+
+    .timer-display {
+      font-size: 1.3rem;
+      font-weight: 700;
+      font-family: monospace;
+      color: var(--accent-gold);
+    }
+
+    .progress-outer {
+      flex-grow: 1;
+      margin: 0 20px;
+      background: #12141c;
+      height: 10px;
+      border-radius: 5px;
+      overflow: hidden;
+      border: 1px solid var(--card-border);
+    }
+
+    .progress-inner {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-orange), var(--accent-gold));
+      transition: width 0.3s ease;
+    }
+
+    .btn {
+      background: var(--accent-orange);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255, 87, 34, 0.4);
+    }
+
+    /* Cards */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 24px;
+      border-radius: 14px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      font-size: 1.3rem;
+      color: var(--accent-orange);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .graphic-container {
+      text-align: center;
+      margin: 15px 0;
+      background: #12141c;
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px dashed var(--card-border);
+    }
+
+    select, input[type="text"], textarea {
+      background: #12141c;
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      width: 100%;
+      box-sizing: border-box;
+      margin-top: 6px;
+    }
+
+    select:focus, input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent-orange);
+    }
+
+    textarea { height: 80px; resize: vertical; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th, td {
+      border: 1px solid var(--card-border);
+      padding: 10px;
+      text-align: left;
+    }
+
+    th { background: #12141c; color: var(--accent-gold); font-size: 0.9rem; }
+
+    .task-item {
+      background: #12141c;
+      padding: 14px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      border-left: 3px solid var(--accent-orange);
+    }
+
+    .btn-submit {
+      background: linear-gradient(90deg, var(--accent-orange), var(--accent-red));
+      font-size: 1.2rem;
+      padding: 14px 40px;
+      border-radius: 30px;
+      display: block;
+      margin: 30px auto;
+    }
+
+    #score-board {
+      display: none;
+      padding: 25px;
+      background: #12141c;
+      border: 2px solid var(--correct);
+      border-radius: 12px;
+      text-align: center;
+      font-size: 1.2rem;
+    }
+
+    .correct { border-color: var(--correct) !important; background-color: rgba(16, 185, 129, 0.1) !important; }
+    .incorrect { border-color: var(--incorrect) !important; background-color: rgba(239, 68, 68, 0.1) !important; }
+    a { color: var(--accent-gold); font-weight: bold; }
+  </style>
+</head>
+<body oninput="updateProgressBar()">
+
+<div class="container">
+  <header>
+    <div class="header-content">
+      <div>
+        <h1>🌋 Volcanology Command HQ: Global Investigation</h1>
+        <p style="margin: 5px 0 0 0; color: var(--text-muted);">Year 9 Earth Science | Complete All Modules in 30 Minutes</p>
+      </div>
+      <span class="badge">STATUS: ACTIVE INVESTIGATION</span>
+    </div>
+  </header>
+
+  <div class="dashboard-bar">
+    <div>⏱️ Mission Timer: <span id="timer" class="timer-display">30:00</span></div>
+    <div class="progress-outer"><div id="progress" class="progress-inner"></div></div>
+    <div>
+      <button class="btn" onclick="startTimer()">Start</button>
+      <button class="btn" style="background: #475569;" onclick="pauseTimer()">Pause</button>
+    </div>
+  </div>
+
+  <!-- MODULE 1: VOCABULARY MATCHING -->
+  <div class="card">
+    <h2>1. Technical Vocabulary Match-Up (3 Mins)</h2>
+    <div class="graphic-container">
+      <svg width="220" height="80" viewBox="0 0 200 80">
+        <polygon points="20,70 100,15 180,70" fill="#2a2f3d" stroke="#ff5722" stroke-width="2"/>
+        <path d="M 90,25 Q 100,5 110,25" fill="none" stroke="#ffb703" stroke-width="3"/>
+        <circle cx="100" cy="15" r="4" fill="#e63946"/>
+        <path d="M 100,70 L 100,15" stroke="#e63946" stroke-width="4"/>
+      </svg>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Magma Chamber → Main Vent → Crater Eruption</p>
+    </div>
+
+    <div class="task-item">
+      <label><strong>1. Magma:</strong></label>
+      <select id="m1">
+        <option value="">-- Choose Definition --</option>
+        <option value="A">Hot molten rock that has erupted onto Earth's surface</option>
+        <option value="B">Horseshoe-shaped zone in the Pacific Basin with most global volcanoes</option>
+        <option value="C">Molten rock stored underneath Earth's crust</option>
+        <option value="D">A liquid's resistance to flow (thickness/stickiness)</option>
+      </select>
+    </div>
+
+    <div class="task-item">
+      <label><strong>2. Lava:</strong></label>
+      <select id="m2">
+        <option value="">-- Choose Definition --</option>
+        <option value="A">Hot molten rock that has erupted onto Earth's surface</option>
+        <option value="B">Horseshoe-shaped zone in the Pacific Basin with most global volcanoes</option>
+        <option value="C">Molten rock stored underneath Earth's crust</option>
+        <option value="D">A liquid's resistance to flow (thickness/stickiness)</option>
+      </select>
+    </div>
+
+    <div class="task-item">
+      <label><strong>3. Ring of Fire:</strong></label>
+      <select id="m3">
+        <option value="">-- Choose Definition --</option>
+        <option value="A">Hot molten rock that has erupted onto Earth's surface</option>
+        <option value="B">Horseshoe-shaped zone in the Pacific Basin with most global volcanoes</option>
+        <option value="C">Molten rock stored underneath Earth's crust</option>
+        <option value="D">A liquid's resistance to flow (thickness/stickiness)</option>
+      </select>
+    </div>
+
+    <div class="task-item">
+      <label><strong>4. Viscosity:</strong></label>
+      <select id="m4">
+        <option value="">-- Choose Definition --</option>
+        <option value="A">Hot molten rock that has erupted onto Earth's surface</option>
+        <option value="B">Horseshoe-shaped zone in the Pacific Basin with most global volcanoes</option>
+        <option value="C">Molten rock stored underneath Earth's crust</option>
+        <option value="D">A liquid's resistance to flow (thickness/stickiness)</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- MODULE 2: SPEED CHECK -->
+  <div class="card">
+    <h2>2. Concept Check: True or False (2 Mins)</h2>
+
+    <div class="task-item">
+      <label>1. Runny, low-viscosity lava leads to steep, violent volcanic explosions.</label>
+      <select id="tf1">
+        <option value="">-- Choose --</option>
+        <option value="True">True</option>
+        <option value="False">False</option>
+      </select>
+    </div>
+
+    <div class="task-item">
+      <label>2. A dormant volcano has not erupted recently but could erupt again in the future.</label>
+      <select id="tf2">
+        <option value="">-- Choose --</option>
+        <option value="True">True</option>
+        <option value="False">False</option>
+      </select>
+    </div>
+
+    <div class="task-item">
+      <label>3. Shield volcanoes have wide, gently sloping sides created by runny lava flows.</label>
+      <select id="tf3">
+        <option value="">-- Choose --</option>
+        <option value="True">True</option>
+        <option value="False">False</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- MODULE 3: GLOBAL DATABASE RESEARCH -->
+  <div class="card">
+    <h2>3. Global Volcano Database Research (7 Mins)</h2>
+    <p style="color: var(--text-muted);">Use Google Search or <a href="https://volcano.si.edu/" target="_blank">Smithsonian Global Volcanism Program</a> to gather data for these 4 volcanoes:</p>
+    
+    <table>
+      <thead>
+        <tr>
+          <th>Volcano Name</th>
+          <th>Country / Location</th>
+          <th>Volcano Type</th>
+          <th>Lava Viscosity (High or Low)</th>
+          <th>Last Known Eruption Year</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Mount Pinatubo</strong></td>
+          <td><input type="text" id="db1" placeholder="Country..."></td>
+          <td><input type="text" id="db2" placeholder="Type (e.g. Stratovolcano)"></td>
+          <td>
+            <select id="db3">
+              <option value="">-- Viscosity --</option>
+              <option value="High">High (Sticky)</option>
+              <option value="Low">Low (Runny)</option>
+            </select>
+          </td>
+          <td><input type="text" id="db4" placeholder="Year (e.g. 1991)"></td>
+        </tr>
+        <tr>
+          <td><strong>Mauna Loa</strong></td>
+          <td><input type="text" id="db5" placeholder="Location..."></td>
+          <td><input type="text" id="db6" placeholder="Type (e.g. Shield)"></td>
+          <td>
+            <select id="db7">
+              <option value="">-- Viscosity --</option>
+              <option value="High">High (Sticky)</option>
+              <option value="Low">Low (Runny)</option>
+            </select>
+          </td>
+          <td><input type="text" id="db8" placeholder="Year..."></td>
+        </tr>
+        <tr>
+          <td><strong>Mount Krakatoa</strong></td>
+          <td><input type="text" id="db9" placeholder="Country..."></td>
+          <td><input type="text" id="db10" placeholder="Type..."></td>
+          <td>
+            <select id="db11">
+              <option value="">-- Viscosity --</option>
+              <option value="High">High (Sticky)</option>
+              <option value="Low">Low (Runny)</option>
+            </select>
+          </td>
+          <td><input type="text" id="db12" placeholder="Year..."></td>
+        </tr>
+        <tr>
+          <td><strong>Kilauea</strong></td>
+          <td><input type="text" id="db13" placeholder="Location..."></td>
+          <td><input type="text" id="db14" placeholder="Type..."></td>
+          <td>
+            <select id="db15">
+              <option value="">-- Viscosity --</option>
+              <option value="High">High (Sticky)</option>
+              <option value="Low">Low (Runny)</option>
+            </select>
+          </td>
+          <td><input type="text" id="db16" placeholder="Year..."></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MODULE 4: VOLCANIC HAZARDS & SCENARIO -->
+  <div class="card">
+    <h2>4. Volcanic Hazard Identification & Emergency Scenario (5 Mins)</h2>
+    
+    <div class="task-item">
+      <label>1. Superheated cloud of gas, ash, and rock fragments moving downhill at over 200 km/h:</label>
+      <select id="h1">
+        <option value="">-- Select Hazard --</option>
+        <option value="Pyroclastic Flow">Pyroclastic Flow</option>
+        <option value="Lahar">Lahar (Mudflow)</option>
+        <option value="Ash Cloud">Ash Cloud</option>
+      </select>
+    </div>
+
+    <div class="task-item">
+      <label>2. Volcanic mudflow caused when ash mixes with water, snow melting, or crater lakes:</label>
+      <select id="h2">
+        <option value="">-- Select Hazard --</option>
+        <option value="Pyroclastic Flow">Pyroclastic Flow</option>
+        <option value="Lahar">Lahar (Mudflow)</option>
+        <option value="Ash Cloud">Ash Cloud</option>
+      </select>
+    </div>
+
+    <div class="task-item">
+      <p><strong>Emergency Scenario:</strong> A town sits 15 km downstream from a snow-capped stratovolcano. Scientists detect high-viscosity magma moving toward the surface.</p>
+      <p>Which hazard poses the greatest IMMEDIATE threat: a slow-moving lava flow OR a Lahar/Pyroclastic flow? <strong>Write 2-3 sentences explaining why:</strong></p>
+      <textarea id="exp1" placeholder="Explain your answer considering speed, melted ice, and temperature..."></textarea>
+    </div>
+  </div>
+
+  <!-- MODULE 5: PLATE TECTONICS -->
+  <div class="card">
+    <h2>5. Plate Tectonics & Formation Mechanisms (3 Mins)</h2>
+
+    <div class="task-item">
+      <label>1. Over 75% of Earth's land volcanoes are along the Pacific Ring of Fire. What plate boundary creates stratovolcanoes here?</label>
+      <select id="tect1">
+        <option value="">-- Select Boundary --</option>
+        <option value="Subduction">Subduction Zone (Convergent Boundary)</option>
+        <option value="Divergent">Mid-Ocean Ridge (Divergent Boundary)</option>
+        <option value="Transform">Transform Boundary (Plates sliding past)</option>
+      </select>
+    </div>
+
+    <div class="task-item">
+      <label>2. Hawaii is in the middle of the Pacific Plate. What thermal feature creates volcanoes here?</label>
+      <select id="tect2">
+        <option value="">-- Select Mechanism --</option>
+        <option value="Hotspot">Mantle Hotspot</option>
+        <option value="Subduction">Subduction Zone</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- MODULE 6: GOOGLE EARTH CHALLENGE -->
+  <div class="card">
+    <h2>6. Google Earth Satellite Mystery (5 Mins)</h2>
+    <p style="color: var(--text-muted);">Copy coordinates into <a href="https://earth.google.com/web/" target="_blank">Google Earth</a> or Google Maps: <code>39.2968° S, 174.0637° E</code></p>
+    
+    <div class="task-item">
+      <label><strong>1. Name of this symmetrical volcano:</strong></label>
+      <input type="text" id="sat1" placeholder="Volcano name...">
+    </div>
+
+    <div class="task-item">
+      <label><strong>2. Satellite Pattern Analysis:</strong> High above, this volcano shows a distinct dark green circle surrounded by farmland.</label>
+      <p style="font-size:0.9rem; color: var(--text-muted);">Research or explain why this exact circular boundary line exists:</p>
+      <textarea id="sat2" placeholder="Explain the national park boundary line vs land clearing..."></textarea>
+    </div>
+  </div>
+
+  <!-- MODULE 7: APPLIED SCIENCE & HUMAN IMPACT -->
+  <div class="card">
+    <h2>7. Magma Physics & Human Settlement (5 Mins)</h2>
+    
+    <div class="task-item">
+      <p><strong>Physics Challenge:</strong> Why does high-viscosity (thick) magma cause violently EXPLOSIVE eruptions, while low-viscosity (runny) magma causes GENTLE effusive eruptions?</p>
+      <textarea id="exp2" placeholder="Hint: Think about trapped gas bubbles trying to escape from thick liquid vs runny liquid..."></textarea>
+    </div>
+
+    <div class="task-item">
+      <p><strong>Critical Thinking:</strong> Millions of people choose to live near active volcanoes. Provide <strong>TWO specific reasons</strong> why people live in volcanic regions:</p>
+      <textarea id="exp3" placeholder="List and explain 2 benefits (e.g. soil fertility, geothermal energy, tourism)..."></textarea>
+    </div>
+  </div>
+
+  <!-- SUBMIT BUTTON -->
+  <button class="btn btn-submit" onclick="checkAnswers()">Submit Telemetry & Check Score</button>
+  <div id="score-board"></div>
+</div>
+
+<script>
+  let timeLeft = 30 * 60;
+  let timerInterval;
+
+  function updateTimerDisplay() {
+    const m = Math.floor(timeLeft / 60);
+    const s = timeLeft % 60;
+    document.getElementById('timer').textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  }
+
+  function startTimer() {
+    if (timerInterval) return;
+    timerInterval = setInterval(() => {
+      if (timeLeft > 0) {
+        timeLeft--;
+        updateTimerDisplay();
+      } else {
+        clearInterval(timerInterval);
+        alert("Time expired! Submitting data.");
+        checkAnswers();
+      }
+    }, 1000);
+  }
+
+  function pauseTimer() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+
+  function updateProgressBar() {
+    const inputs = document.querySelectorAll('input, select, textarea');
+    let filled = 0;
+    inputs.forEach(i => {
+      if (i.value.trim() !== '') filled++;
+    });
+    const pct = Math.round((filled / inputs.length) * 100);
+    document.getElementById('progress').style.width = pct + '%';
+  }
+
+  window.onload = startTimer;
+
+  function checkAnswers() {
+    let score = 0;
+    const totalPossible = 29;
+
+    function validate(id, targets) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const val = el.value.trim().toLowerCase();
+      const valid = Array.isArray(targets) ? targets.map(t => t.toLowerCase()) : [targets.toLowerCase()];
+
+      if (valid.some(t => val.includes(t))) {
+        el.classList.add('correct');
+        el.classList.remove('incorrect');
+        score++;
+      } else {
+        el.classList.add('incorrect');
+        el.classList.remove('correct');
+      }
+    }
+
+    function validateWritten(id, minLen, keywords) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const val = el.value.trim().toLowerCase();
+      const hasLen = val.length >= minLen;
+      const hasKW = keywords.some(k => val.includes(k.toLowerCase()));
+
+      if (hasLen && hasKW) {
+        el.classList.add('correct');
+        el.classList.remove('incorrect');
+        score++;
+      } else {
+        el.classList.add('incorrect');
+        el.classList.remove('correct');
+      }
+    }
+
+    // Module 1
+    validate('m1', 'C');
+    validate('m2', 'A');
+    validate('m3', 'B');
+    validate('m4', 'D');
+
+    // Module 2
+    validate('tf1', 'False');
+    validate('tf2', 'True');
+    validate('tf3', 'True');
+
+    // Module 3 Database
+    validate('db1', ['philippines', 'philippine']);
+    validate('db2', ['stratovolcano', 'composite']);
+    validate('db3', 'High');
+    validate('db4', ['1991', '1992', '1993']);
+
+    validate('db5', ['hawaii', 'hawaiian', 'usa']);
+    validate('db6', 'shield');
+    validate('db7', 'Low');
+    validate('db8', ['2022', '2023', '2024', '2025', '2026']);
+
+    validate('db9', 'indonesia');
+    validate('db10', ['stratovolcano', 'composite', 'caldera']);
+    validate('db11', 'High');
+    validate('db12', ['2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025', '2026', '1883']);
+
+    validate('db13', ['hawaii', 'hawaiian', 'usa']);
+    validate('db14', 'shield');
+    validate('db15', 'Low');
+    validate('db16', ['2023', '2024', '2025', '2026', '2021', '2018', '2022']);
+
+    // Module 4 Hazards
+    validate('h1', 'Pyroclastic Flow');
+    validate('h2', 'Lahar');
+    validateWritten('exp1', 20, ['lahar', 'pyroclastic', 'speed', 'fast', 'flow', 'gas', 'mudflow', 'melt']);
+
+    // Module 5 Tectonics
+    validate('tect1', 'Subduction');
+    validate('tect2', 'Hotspot');
+
+    // Module 6 Google Earth
+    validate('sat1', ['taranaki', 'mount taranaki', 'egmont']);
+    validateWritten('sat2', 20, ['park', 'boundary', 'national park', 'forest', 'farmland', 'trees', 'circle', 'radius', 'egmont']);
+
+    // Module 7 Physics & Human
+    validateWritten('exp2', 20, ['gas', 'trap', 'pressure', 'bubble', 'sticky', 'thick', 'escape', 'burst']);
+    validateWritten('exp3', 20, ['soil', 'fertile', 'agriculture', 'farming', 'geothermal', 'energy', 'tourism', 'minerals', 'tourist']);
+
+    const board = document.getElementById('score-board');
+    board.style.display = 'block';
+    const percent = Math.round((score / totalPossible) * 100);
+
+    board.innerHTML = `<h3>📊 Volcanology Assessment Complete</h3>` +
+      `<p><strong>Overall Score: ${score} / ${totalPossible} (${percent}%)</strong></p>` +
+      `<p style="font-size:0.95rem; color: var(--text-muted);">${percent >= 80 ? '🌟 Outstanding Work! You mastered the webquest.' : '👍 Good effort! Review any red highlighted boxes and improve your answers.'}</p>`;
+    
+    pauseTimer();
+  }
+</script>
+
+</body>
+</html>
